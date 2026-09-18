@@ -28,6 +28,11 @@
       var copyBtn = document.getElementById('btn-focus-copy');
       var relationsBtn = document.getElementById('btn-focus-relations');
       var clearBtn = document.getElementById('btn-focus-clear');
+      var drillSection = document.getElementById('focus-drill');
+      var drillBtn = document.getElementById('btn-focus-drill');
+      var drillLabel = document.getElementById('focus-drill-label');
+      var drillType = document.getElementById('focus-drill-type');
+      var breadcrumb = document.getElementById('atlas-breadcrumb');
       var activeIds = [];
       var hoveredRelationship = null;
       var focusedRelationship = null;
@@ -382,6 +387,30 @@
         semanticId.textContent = id;
         semanticId.hidden = false;
         renderSourceEvidence(id);
+        renderDrill(node);
+      }
+      function renderDrill(node) {
+        var href = node.getAttribute('data-node-drill-href');
+        var drillLabelValue = node.getAttribute('data-node-drill-label');
+        var drillTypeValue = node.getAttribute('data-node-drill-type');
+        if (!href || !drillSection || !drillBtn) {
+          if (drillSection) drillSection.hidden = true;
+          return;
+        }
+        drillLabel.textContent = drillLabelValue || viewerText('viewer.passport.drill');
+        drillType.textContent = drillTypeValue ? drillTypeValue.toUpperCase() : '';
+        drillBtn.setAttribute('data-drill-href', href);
+        drillBtn.setAttribute('aria-label', viewerText('viewer.passport.drill.navigate', { label: drillLabelValue || href }));
+        drillSection.hidden = false;
+      }
+      function navigateToDrill(href) {
+        if (!href) return false;
+        try {
+          window.location.href = href;
+          return true;
+        } catch (_) {
+          return false;
+        }
       }
       function relationshipsFor(id, byId) {
         var seen = {};
@@ -1143,6 +1172,12 @@
         downstreamCount.textContent = '0';
         upstreamBtn.disabled = true;
         downstreamBtn.disabled = true;
+        if (drillSection) {
+          drillSection.hidden = true;
+          if (drillBtn) drillBtn.removeAttribute('data-drill-href');
+          if (drillLabel) drillLabel.textContent = '';
+          if (drillType) drillType.textContent = '';
+        }
         relationshipList.textContent = '';
         copyBtn.textContent = viewerText('viewer.passport.copy');
         copyBtn.setAttribute('aria-label', viewerText('viewer.passport.copy.focus'));
@@ -1284,6 +1319,17 @@
         }
         else if (activeIds.length) clear();
       });
+      svg.addEventListener('dblclick', function (event) {
+        if (container.getAttribute('data-just-panned') === 'true') return;
+        var node = event.target.closest('[data-node-id]');
+        if (!node) return;
+        var drillHref = node.getAttribute('data-node-drill-href');
+        if (drillHref) {
+          event.preventDefault();
+          event.stopPropagation();
+          navigateToDrill(drillHref);
+        }
+      });
       svg.addEventListener('keydown', function (event) {
         var node = event.target.closest('[data-node-id]');
         if (!node || (event.key !== 'Enter' && event.key !== ' ')) return;
@@ -1295,6 +1341,12 @@
         }
       });
       clearBtn.addEventListener('click', function () { clear({ restoreFocus: true }); });
+      if (drillBtn) {
+        drillBtn.addEventListener('click', function () {
+          var href = drillBtn.getAttribute('data-drill-href');
+          if (href) navigateToDrill(href);
+        });
+      }
       copyBtn.addEventListener('click', copyFocusLink);
       upstreamBtn.addEventListener('click', function () { applyReachability('upstream'); });
       downstreamBtn.addEventListener('click', function () { applyReachability('downstream'); });
@@ -1411,6 +1463,42 @@
 
       window.addEventListener('hashchange', syncFocusFromHash);
       syncFocusFromHash();
+
+      function initAtlasBreadcrumb() {
+        if (!breadcrumb) return;
+        var atlasDataNode = document.getElementById('archify-atlas-data');
+        if (!atlasDataNode) return;
+        var atlasData;
+        try { atlasData = JSON.parse(atlasDataNode.textContent || '{}'); }
+        catch (_) { return; }
+        if (!atlasData || !atlasData.breadcrumb || !atlasData.breadcrumb.length) return;
+        var crumbs = atlasData.breadcrumb;
+        breadcrumb.textContent = '';
+        crumbs.forEach(function (crumb, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'atlas-breadcrumb-sep';
+            sep.setAttribute('aria-hidden', 'true');
+            sep.textContent = '/';
+            breadcrumb.appendChild(sep);
+          }
+          var isLast = index === crumbs.length - 1;
+          if (isLast) {
+            var current = document.createElement('span');
+            current.textContent = crumb.label;
+            current.setAttribute('aria-current', 'page');
+            breadcrumb.appendChild(current);
+          } else {
+            var link = document.createElement('a');
+            link.href = crumb.href || '#';
+            link.textContent = crumb.label;
+            link.setAttribute('aria-label', viewerText('viewer.breadcrumb.parent') + ': ' + crumb.label);
+            breadcrumb.appendChild(link);
+          }
+        });
+        breadcrumb.hidden = false;
+      }
+      initAtlasBreadcrumb();
 
       return {
         set: set,
