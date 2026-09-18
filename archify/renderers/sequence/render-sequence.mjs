@@ -317,11 +317,13 @@ function renderParticipant(participant) {
     : '';
   const brand = renderBrandMark(participant, { x: participant.x + layout.participantW - 22, y: layout.topY + 6 });
   const labelFontSize = fittedNodeFontSize(participant.label, brandLabelFitWidth(participant, layout.participantW), 11, 8);
+  const drillMeta = participant.drill ? { drillHref: participant.drill.href, drillLabel: participant.drill.label, drillType: participant.drill.diagram_type } : {};
   const passport = {
     kind: participant.type,
     sublabel: participant.sublabel,
     context: i18nText(sequence.meta.locale, 'node.context.sequence'),
     ...brandMetadataFor(participant),
+    ...drillMeta,
   };
   return `        <g ${focusNodeAttrs(participant.id, participant.label, passport, sequence.meta.locale)}>
           ${focusNodeTitle(participant.label, passport)}

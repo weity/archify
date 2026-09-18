@@ -445,12 +445,14 @@ function renderState(state) {
     : '';
   const brand = renderBrandMark(state, { x: state.x + state.width - 22, y: state.y + 6 });
   const labelFontSize = fittedNodeFontSize(state.label, brandLabelFitWidth(state, state.width), 10, 8);
+  const drillMeta = state.drill ? { drillHref: state.drill.href, drillLabel: state.drill.label, drillType: state.drill.diagram_type } : {};
   const passport = {
     kind: state.type,
     sublabel: state.sublabel,
     tag: state.tag,
     context: laneLabels.get(state.lane) || i18nText(lifecycle.meta.locale, 'node.context.lifecycle'),
     ...brandMetadataFor(state),
+    ...drillMeta,
   };
   return `        <g ${focusNodeAttrs(state.id, state.label, passport, lifecycle.meta.locale)}>
           ${focusNodeTitle(state.label, passport)}

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "layout": {
+    "mode": "grid",
+    "cols": 3,
+    "gapX": 200,
+    "gapY": 160
+  },
+  "meta": {
+    "title": "Recorder SDLC System",
+    "quality_profile": "showcase",
+    "atlas": {
+      "id": "recorder-sdlc",
+      "diagram_id": "system",
+      "level": 0
+    },
+    "views": [
+      {
+        "id": "overview",
+        "label": "System Overview",
+        "focus": ["app", "backend", "rag"],
+        "note": "Core components of the recording and AI analysis system"
+      },
+      {
+        "id": "integrations",
+        "label": "External Integrations",
+        "focus": ["hubspot", "rag"],
+        "note": "Third-party services and AI pipeline"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "app",
+      "type": "frontend",
+      "label": "Recorder App",
+      "sublabel": "iOS/Android",
+      "row": 0,
+      "col": 0,
+      "drill": {
+        "href": "./10-app.architecture.html",
+        "diagram_type": "architecture",
+        "label": "View app internals"
+      }
+    },
+    {
+      "id": "backend",
+      "type": "backend",
+      "label": "Recorder Backend",
+      "sublabel": "API & Processing",
+      "row": 0,
+      "col": 1,
+      "drill": {
+        "href": "./11-backend.architecture.html",
+        "diagram_type": "architecture",
+        "label": "View backend services"
+      }
+    },
+    {
+      "id": "rag",
+      "type": "cloud",
+      "label": "RAG Pipeline",
+      "sublabel": "AI Analysis",
+      "row": 0,
+      "col": 2,
+      "drill": {
+        "href": "./12-rag.dataflow.html",
+        "diagram_type": "dataflow",
+        "label": "View RAG data flow"
+      }
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Primary Store",
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "storage",
+      "type": "cloud",
+      "label": "Object Storage",
+      "sublabel": "Audio Files",
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "hubspot",
+      "type": "external",
+      "label": "HubSpot",
+      "sublabel": "CRM Integration",
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "connections": [
+    {
+      "from": "app",
+      "to": "backend",
+      "label": "REST API"
+    },
+    {
+      "from": "backend",
+      "to": "db",
+      "label": "SQL",
+      "labelDy": 24
+    },
+    {
+      "from": "backend",
+      "to": "storage",
+      "label": "Upload/Download"
+    },
+    {
+      "from": "backend",
+      "to": "rag",
+      "label": "Analysis",
+      "labelDy": -22
+    },
+    {
+      "from": "rag",
+      "to": "backend",
+      "label": "Results",
+      "variant": "dashed",
+      "labelDy": 22
+    },
+    {
+      "from": "backend",
+      "to": "hubspot",
+      "label": "Sync"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Drill Navigation",
+      "items": [
+        "Click any component to view its Semantic Passport",
+        "Components with drill icons link to detailed diagrams",
+        "Use breadcrumb to navigate back to parent level"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "atlas_type": "atlas",
+  "meta": {
+    "title": "Archify 系统图册",
+    "description": "Archify 图表渲染引擎的完整架构与实现细节",
+    "entry": "system",
+    "repository": {
+      "url": "https://github.com/tt-a1i/archify"
+    }
+  },
+  "diagrams": [
+    {
+      "id": "system",
+      "type": "architecture",
+      "level": 0,
+      "title": "系统概览",
+      "path": "00-system.architecture.html",
+      "source_path": "00-system.architecture.json",
+      "summary": "Archify 核心组件：渲染器、Viewer、CLI 和分发工具"
+    }
+  ],
+  "levels": {
+    "L0": {
+      "name": "系统",
+      "description": "整体系统边界和主要组件",
+      "preferred_types": ["architecture"]
+    },
+    "L1": {
+      "name": "模块",
+      "description": "组件内部结构",
+      "preferred_types": ["architecture"]
+    },
+    "L2": {
+      "name": "业务",
+      "description": "业务流程和状态机",
+      "preferred_types": ["workflow", "lifecycle"]
+    },
+    "L3": {
+      "name": "交互",
+      "description": "跨系统通信",
+      "preferred_types": ["sequence"]
+    },
+    "L4": {
+      "name": "API",
+      "description": "具体 API 调用链",
+      "preferred_types": ["sequence"]
+    },
+    "L5": {
+      "name": "数据",
+      "description": "数据血缘和实现",
+      "preferred_types": ["dataflow"]
+    }
+  }
+}

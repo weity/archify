@@ -36,6 +36,47 @@
           }
         },
         "views": { "$ref": "common.schema.json#/$defs/guidedViews" },
+        "atlas": {
+          "type": "object",
+          "description": "Atlas membership metadata for drill navigation",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id",
+              "description": "Atlas manifest reference"
+            },
+            "diagram_id": {
+              "$ref": "common.schema.json#/$defs/id",
+              "description": "This diagram's stable ID within the atlas"
+            },
+            "parent": {
+              "type": "string",
+              "description": "Relative path to parent diagram HTML"
+            },
+            "parent_node": {
+              "$ref": "common.schema.json#/$defs/id",
+              "description": "Node ID in parent that drills to this diagram"
+            },
+            "level": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9,
+              "description": "Hierarchy level within the atlas"
+            },
+            "breadcrumb": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["label", "href"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "href": { "type": "string" }
+                }
+              },
+              "description": "Navigation breadcrumb from L0 to this diagram"
+            }
+          }
+        },
         "legend": {
           "type": "object",
           "additionalProperties": false,
@@ -112,6 +153,8 @@
               }
             }
           },
+          "drill": { "$ref": "common.schema.json#/$defs/drill" },
+          "links": { "$ref": "common.schema.json#/$defs/links" },
           "row": { "type": "integer", "minimum": 0 },
           "col": { "type": "integer", "minimum": 0 },
           "pos": { "$ref": "common.schema.json#/$defs/point" },

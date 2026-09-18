@@ -2050,6 +2050,92 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       line-height: 1.4;
     }
     .semantic-passport-reach-status[hidden] { display: none; }
+    .semantic-passport-drill {
+      display: grid;
+      gap: 0.28rem;
+      margin-top: 0.52rem;
+      padding-top: 0.48rem;
+      border-top: 1px solid color-mix(in srgb, var(--toolbar-border) 76%, transparent);
+    }
+    .semantic-passport-drill[hidden] { display: none; }
+    .semantic-passport-drill-label {
+      color: var(--text-faint);
+      font-size: 0.5rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .semantic-passport-drill button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      min-width: 0;
+      padding: 0.5rem 0.65rem;
+      border: 1px solid color-mix(in srgb, var(--database-stroke) 62%, var(--toolbar-border));
+      border-radius: 0.45rem;
+      background: color-mix(in srgb, var(--database-fill) 38%, transparent);
+      color: var(--text);
+      text-align: left;
+    }
+    .semantic-passport-drill button:hover,
+    .semantic-passport-drill button:focus-visible {
+      border-color: color-mix(in srgb, var(--database-stroke) 82%, var(--toolbar-border));
+      background: color-mix(in srgb, var(--database-fill) 58%, transparent);
+    }
+    .semantic-passport-drill button:focus-visible {
+      outline: 2px solid var(--database-stroke);
+      outline-offset: 1px;
+    }
+    .semantic-passport-drill strong {
+      overflow: hidden;
+      font-size: 0.5625rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .semantic-passport-drill small {
+      color: var(--database-stroke);
+      font-size: 0.5rem;
+      text-transform: uppercase;
+    }
+    .semantic-passport-drill .drill-arrow {
+      color: var(--database-stroke);
+      font-size: 0.75rem;
+    }
+    .atlas-breadcrumb {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      z-index: 11;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.35rem 0.55rem;
+      border: 1px solid var(--toolbar-border);
+      border-radius: 0.5rem;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      font-size: 0.5625rem;
+    }
+    .atlas-breadcrumb[hidden] { display: none; }
+    html[data-preset="blueprint"] .atlas-breadcrumb { border-radius: 0.18rem; }
+    .atlas-breadcrumb a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .atlas-breadcrumb a:hover,
+    .atlas-breadcrumb a:focus-visible { color: var(--text); }
+    .atlas-breadcrumb span {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .atlas-breadcrumb-sep {
+      color: var(--text-dim);
+      font-size: 0.5rem;
+    }
+    @media (max-width: 720px) {
+      .atlas-breadcrumb { left: 0.5rem; top: 0.5rem; max-width: calc(100% - 1rem); }
+    }
     .relationship-lens-list {
       max-height: min(18rem, 46vh);
       overflow: auto;
@@ -5088,6 +5174,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
     <!-- ARCHIFY:GUIDED_VIEWS_DATA -->
     <!-- ARCHIFY:SOURCE_EVIDENCE_DATA -->
+    <!-- ARCHIFY:ATLAS_DATA -->
     <!-- ARCHIFY:I18N_DATA -->
     <div class="guided-views no-print" id="guided-views" hidden aria-label="{{i18n:viewer.guided.region}}">
       <button id="guided-view-prev" type="button" aria-label="{{i18n:viewer.guided.previous}}" title="{{i18n:viewer.guided.previous.title}}">&#8592;</button>
@@ -5279,6 +5366,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text x="742" y="186" class="t-muted" font-size="8">Security Group</text>
       </svg>
       <!-- ARCHIFY:SVG_SLOT_END -->
+      <nav class="atlas-breadcrumb no-print" id="atlas-breadcrumb" hidden aria-label="{{i18n:viewer.breadcrumb.label}}">
+        <!-- Breadcrumb items will be populated by JavaScript from meta.atlas data -->
+      </nav>
       <p class="intent-trace-status no-print" id="intent-trace-status" role="status" aria-live="polite" aria-atomic="true"></p>
       <div class="share-chapter-cue no-print" id="share-chapter-cue" hidden role="status" aria-live="polite">
         <div class="share-chapter-index">
@@ -5384,6 +5474,14 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
                 </button>
               </div>
               <small class="semantic-passport-reach-status" id="focus-reach-status" hidden aria-live="polite"></small>
+            </div>
+            <div class="semantic-passport-drill" id="focus-drill" hidden>
+              <span class="semantic-passport-drill-label">{{i18n:viewer.passport.drill}}</span>
+              <button id="btn-focus-drill" type="button" aria-label="{{i18n:viewer.passport.drill.aria}}">
+                <strong id="focus-drill-label"></strong>
+                <small id="focus-drill-type"></small>
+                <span class="drill-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
           </div>
           <div class="relationship-lens-actions">
@@ -7565,6 +7663,11 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       var copyBtn = document.getElementById('btn-focus-copy');
       var relationsBtn = document.getElementById('btn-focus-relations');
       var clearBtn = document.getElementById('btn-focus-clear');
+      var drillSection = document.getElementById('focus-drill');
+      var drillBtn = document.getElementById('btn-focus-drill');
+      var drillLabel = document.getElementById('focus-drill-label');
+      var drillType = document.getElementById('focus-drill-type');
+      var breadcrumb = document.getElementById('atlas-breadcrumb');
       var activeIds = [];
       var hoveredRelationship = null;
       var focusedRelationship = null;
@@ -7919,6 +8022,30 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         semanticId.textContent = id;
         semanticId.hidden = false;
         renderSourceEvidence(id);
+        renderDrill(node);
+      }
+      function renderDrill(node) {
+        var href = node.getAttribute('data-node-drill-href');
+        var drillLabelValue = node.getAttribute('data-node-drill-label');
+        var drillTypeValue = node.getAttribute('data-node-drill-type');
+        if (!href || !drillSection || !drillBtn) {
+          if (drillSection) drillSection.hidden = true;
+          return;
+        }
+        drillLabel.textContent = drillLabelValue || viewerText('viewer.passport.drill');
+        drillType.textContent = drillTypeValue ? drillTypeValue.toUpperCase() : '';
+        drillBtn.setAttribute('data-drill-href', href);
+        drillBtn.setAttribute('aria-label', viewerText('viewer.passport.drill.navigate', { label: drillLabelValue || href }));
+        drillSection.hidden = false;
+      }
+      function navigateToDrill(href) {
+        if (!href) return false;
+        try {
+          window.location.href = href;
+          return true;
+        } catch (_) {
+          return false;
+        }
       }
       function relationshipsFor(id, byId) {
         var seen = {};
@@ -8680,6 +8807,12 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         downstreamCount.textContent = '0';
         upstreamBtn.disabled = true;
         downstreamBtn.disabled = true;
+        if (drillSection) {
+          drillSection.hidden = true;
+          if (drillBtn) drillBtn.removeAttribute('data-drill-href');
+          if (drillLabel) drillLabel.textContent = '';
+          if (drillType) drillType.textContent = '';
+        }
         relationshipList.textContent = '';
         copyBtn.textContent = viewerText('viewer.passport.copy');
         copyBtn.setAttribute('aria-label', viewerText('viewer.passport.copy.focus'));
@@ -8821,6 +8954,17 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         }
         else if (activeIds.length) clear();
       });
+      svg.addEventListener('dblclick', function (event) {
+        if (container.getAttribute('data-just-panned') === 'true') return;
+        var node = event.target.closest('[data-node-id]');
+        if (!node) return;
+        var drillHref = node.getAttribute('data-node-drill-href');
+        if (drillHref) {
+          event.preventDefault();
+          event.stopPropagation();
+          navigateToDrill(drillHref);
+        }
+      });
       svg.addEventListener('keydown', function (event) {
         var node = event.target.closest('[data-node-id]');
         if (!node || (event.key !== 'Enter' && event.key !== ' ')) return;
@@ -8832,6 +8976,12 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         }
       });
       clearBtn.addEventListener('click', function () { clear({ restoreFocus: true }); });
+      if (drillBtn) {
+        drillBtn.addEventListener('click', function () {
+          var href = drillBtn.getAttribute('data-drill-href');
+          if (href) navigateToDrill(href);
+        });
+      }
       copyBtn.addEventListener('click', copyFocusLink);
       upstreamBtn.addEventListener('click', function () { applyReachability('upstream'); });
       downstreamBtn.addEventListener('click', function () { applyReachability('downstream'); });
@@ -8948,6 +9098,42 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
       window.addEventListener('hashchange', syncFocusFromHash);
       syncFocusFromHash();
+
+      function initAtlasBreadcrumb() {
+        if (!breadcrumb) return;
+        var atlasDataNode = document.getElementById('archify-atlas-data');
+        if (!atlasDataNode) return;
+        var atlasData;
+        try { atlasData = JSON.parse(atlasDataNode.textContent || '{}'); }
+        catch (_) { return; }
+        if (!atlasData || !atlasData.breadcrumb || !atlasData.breadcrumb.length) return;
+        var crumbs = atlasData.breadcrumb;
+        breadcrumb.textContent = '';
+        crumbs.forEach(function (crumb, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'atlas-breadcrumb-sep';
+            sep.setAttribute('aria-hidden', 'true');
+            sep.textContent = '/';
+            breadcrumb.appendChild(sep);
+          }
+          var isLast = index === crumbs.length - 1;
+          if (isLast) {
+            var current = document.createElement('span');
+            current.textContent = crumb.label;
+            current.setAttribute('aria-current', 'page');
+            breadcrumb.appendChild(current);
+          } else {
+            var link = document.createElement('a');
+            link.href = crumb.href || '#';
+            link.textContent = crumb.label;
+            link.setAttribute('aria-label', viewerText('viewer.breadcrumb.parent') + ': ' + crumb.label);
+            breadcrumb.appendChild(link);
+          }
+        });
+        breadcrumb.hidden = false;
+      }
+      initAtlasBreadcrumb();
 
       return {
         set: set,

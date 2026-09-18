@@ -1,0 +1,144 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Recording Workflow",
+    "quality_profile": "showcase",
+    "atlas": {
+      "id": "recorder-sdlc",
+      "diagram_id": "app-recording",
+      "parent": "./10-app.architecture.html",
+      "parent_node": "recording",
+      "level": 2,
+      "breadcrumb": [
+        { "label": "System", "href": "./00-system.architecture.html" },
+        { "label": "App", "href": "./10-app.architecture.html" },
+        { "label": "Recording", "href": "./20-app-recording.workflow.html" }
+      ]
+    },
+    "views": [
+      {
+        "id": "happy-path",
+        "label": "Happy Path",
+        "focus": ["start", "record", "save", "upload", "done"],
+        "note": "Successful recording flow from start to cloud sync"
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "user",
+      "label": "User"
+    },
+    {
+      "id": "app",
+      "label": "App"
+    },
+    {
+      "id": "backend",
+      "label": "Backend"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "lane": "user",
+      "col": 0,
+      "type": "frontend",
+      "label": "Start",
+      "sublabel": "Recording"
+    },
+    {
+      "id": "record",
+      "lane": "app",
+      "col": 1,
+      "type": "frontend",
+      "label": "Capture Audio"
+    },
+    {
+      "id": "stop",
+      "lane": "user",
+      "col": 2,
+      "type": "frontend",
+      "label": "Stop",
+      "sublabel": "Recording"
+    },
+    {
+      "id": "save",
+      "lane": "app",
+      "col": 3,
+      "type": "database",
+      "label": "Save Local"
+    },
+    {
+      "id": "upload",
+      "lane": "app",
+      "col": 4,
+      "type": "backend",
+      "label": "Upload",
+      "drill": {
+        "href": "./30-upload.sequence.html",
+        "diagram_type": "sequence",
+        "label": "View upload API sequence"
+      }
+    },
+    {
+      "id": "process",
+      "lane": "backend",
+      "col": 5,
+      "type": "cloud",
+      "label": "AI Analysis"
+    },
+    {
+      "id": "done",
+      "lane": "app",
+      "col": 5,
+      "type": "frontend",
+      "label": "Complete"
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "record",
+      "label": "Tap record"
+    },
+    {
+      "from": "record",
+      "to": "stop",
+      "label": "Recording..."
+    },
+    {
+      "from": "stop",
+      "to": "save",
+      "label": "Tap stop"
+    },
+    {
+      "from": "save",
+      "to": "upload",
+      "label": "Auto sync"
+    },
+    {
+      "from": "upload",
+      "to": "process",
+      "label": "POST /upload"
+    },
+    {
+      "from": "process",
+      "to": "done",
+      "label": "Results ready",
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": ["start", "record", "stop", "save", "upload", "process", "done"],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Navigation",
+      "items": [
+        "← App Architecture: ./10-app.architecture.html",
+        "Upload node links to API sequence diagram"
+      ]
+    }
+  ]
+}

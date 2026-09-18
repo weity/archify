@@ -49,12 +49,35 @@ export async function loadDiagramWithBrandMarks(options) {
 
 const START_TYPES = new Set(['architecture', 'workflow', 'sequence', 'dataflow', 'lifecycle']);
 
+function buildAtlasViewerData(atlas) {
+  if (!atlas) return null;
+  const breadcrumb = [];
+  if (Array.isArray(atlas.breadcrumb)) {
+    atlas.breadcrumb.forEach((crumb) => {
+      breadcrumb.push({
+        label: crumb.label || crumb.id,
+        href: crumb.href,
+        level: crumb.level,
+      });
+    });
+  }
+  return {
+    id: atlas.id,
+    diagram_id: atlas.diagram_id,
+    level: atlas.level,
+    parent: atlas.parent,
+    parent_node: atlas.parent_node,
+    breadcrumb,
+  };
+}
+
 // Common CLI tail: fill the template and write the standalone HTML file.
 export function writeDiagram({ outPath, template, diagramType, meta, svg, cards, sourceEvidence = null }) {
   if (!START_TYPES.has(diagramType)) throw new Error(`writeDiagram: unknown diagram type ${JSON.stringify(diagramType)}`);
   const outputGuard = outputPathGuards.get(outPath);
   if (outputGuard) resolveOutputPath(outputGuard);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  const atlasData = meta.atlas ? buildAtlasViewerData(meta.atlas) : null;
   fs.writeFileSync(outPath, applyTemplate(template, {
     title: meta.title,
     subtitle: meta.subtitle,
@@ -64,6 +87,7 @@ export function writeDiagram({ outPath, template, diagramType, meta, svg, cards,
     visualPreset: meta.visual_preset || 'classic',
     guidedViews: meta.views || [],
     sourceEvidence,
+    atlas: atlasData,
   }));
   outputPathGuards.delete(outPath);
   console.log(outPath);
@@ -188,6 +212,9 @@ export function focusNodeAttrs(id, label, metadata = {}, locale) {
     ['data-node-brand-id', metadata.brandId],
     ['data-node-brand-status', metadata.brandStatus],
     ['data-node-brand-source', metadata.brandSource],
+    ['data-node-drill-href', metadata.drillHref],
+    ['data-node-drill-label', metadata.drillLabel],
+    ['data-node-drill-type', metadata.drillType],
   ].filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
     .map(([name, value]) => ` ${name}="${esc(String(value))}"`)
     .join('');

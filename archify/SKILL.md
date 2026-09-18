@@ -121,6 +121,10 @@ Generated HTML already contains theme switching, pan/zoom, search, focus, relati
 
 Read `references/viewer-runtime.md` only when the user explicitly asks for Share Cards, Route/Reach cards, motion, guided stories, deep links, presentation, search/focus, or another Viewer Runtime feature.
 
+## Atlas (hierarchical drill-down)
+
+For navigable project panoramas (L0 system → L5 implementation), add `drill` to nodes and `meta.atlas` for breadcrumb. Read `.agents/skills/archify-atlas/SKILL.md` for conventions and examples.
+
 ## Setup and fallback
 
 No install is required inside the skill package. Verify with:

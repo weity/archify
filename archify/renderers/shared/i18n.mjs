@@ -399,6 +399,16 @@ const MESSAGE_PAIRS = {
   'viewer.passport.reach.noDownstream': ['No downstream authored nodes', '没有下游编写节点'],
   'viewer.passport.reach.status': ['{direction} · {nodes} nodes · {links} links · max {hops} hops', '{direction} · {nodes} 个节点 · {links} 条连接 · 最深 {hops} 跳'],
 
+  'viewer.passport.drill': ['Drill down', '下钻'],
+  'viewer.passport.drill.aria': ['Navigate to child diagram', '导航到子图表'],
+  'viewer.passport.drill.navigate': ['Drill into {label}', '下钻到{label}'],
+  'viewer.passport.drill.dblclick': ['Double-click to drill into {label}', '双击下钻到{label}'],
+
+  'viewer.breadcrumb.label': ['Atlas navigation', 'Atlas 导航'],
+  'viewer.breadcrumb.home': ['Home', '首页'],
+  'viewer.breadcrumb.parent': ['Parent diagram', '父级图表'],
+  'viewer.breadcrumb.current': ['Current diagram', '当前图表'],
+
   'viewer.route.eyebrow': ['Route probe', '路径探测'],
   'viewer.route.start': ['Choose a start node', '选择起点节点'],
   'viewer.route.start.find': ['Find start', '查找起点'],
