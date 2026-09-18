@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "layout": {
+    "mode": "grid",
+    "cols": 3,
+    "gapX": 200,
+    "gapY": 160
+  },
+  "meta": {
+    "title": "Recorder App Architecture",
+    "quality_profile": "showcase",
+    "atlas": {
+      "id": "recorder-sdlc",
+      "diagram_id": "app",
+      "parent": "./00-system.architecture.html",
+      "parent_node": "app",
+      "level": 1,
+      "breadcrumb": [
+        { "label": "System", "href": "./00-system.architecture.html" },
+        { "label": "App", "href": "./10-app.architecture.html" }
+      ]
+    },
+    "views": [
+      {
+        "id": "core",
+        "label": "Core Features",
+        "focus": ["recording", "playback", "library"],
+        "note": "Primary user-facing features"
+      },
+      {
+        "id": "data",
+        "label": "Data Layer",
+        "focus": ["local-db", "sync", "api-client"],
+        "note": "Local storage and synchronization"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "recording",
+      "type": "frontend",
+      "label": "Recording",
+      "sublabel": "Audio Capture",
+      "row": 0,
+      "col": 0,
+      "drill": {
+        "href": "./20-app-recording.workflow.html",
+        "diagram_type": "workflow",
+        "label": "View recording workflow"
+      }
+    },
+    {
+      "id": "playback",
+      "type": "frontend",
+      "label": "Playback",
+      "sublabel": "Audio Player",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "library",
+      "type": "frontend",
+      "label": "Library",
+      "sublabel": "Recording List",
+      "row": 0,
+      "col": 2
+    },
+    {
+      "id": "local-db",
+      "type": "database",
+      "label": "Local DB",
+      "sublabel": "SQLite",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "sync",
+      "type": "backend",
+      "label": "Sync Engine",
+      "sublabel": "Background Sync",
+      "row": 1,
+      "col": 1,
+      "links": [
+        {
+          "target": "backend",
+          "kind": "reference",
+          "href": "./11-backend.architecture.html",
+          "label": "Backend sync endpoint"
+        }
+      ]
+    },
+    {
+      "id": "api-client",
+      "type": "backend",
+      "label": "API Client",
+      "sublabel": "HTTP Layer",
+      "row": 1,
+      "col": 2,
+      "drill": {
+        "href": "./30-upload.sequence.html",
+        "diagram_type": "sequence",
+        "label": "View upload sequence"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": "recording",
+      "to": "local-db",
+      "label": "Save",
+      "labelDy": 24
+    },
+    {
+      "from": "playback",
+      "to": "local-db",
+      "label": "Load",
+      "labelDx": 30
+    },
+    {
+      "from": "library",
+      "to": "sync",
+      "label": "Trigger",
+      "variant": "dashed",
+      "labelDx": 30
+    },
+    {
+      "from": "sync",
+      "to": "api-client",
+      "label": "HTTP",
+      "labelDx": 30
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Navigation",
+      "items": [
+        "← System Overview: ./00-system.architecture.html",
+        "Recording feature has detailed workflow diagram",
+        "API Client links to upload sequence diagram"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "atlas_type": "atlas",
+  "meta": {
+    "title": "Recorder SDLC System Atlas",
+    "description": "Complete system architecture with drill-down navigation from system overview to implementation details",
+    "entry": "system"
+  },
+  "diagrams": [
+    {
+      "id": "system",
+      "type": "architecture",
+      "level": 0,
+      "title": "System Overview",
+      "path": "00-system.architecture.html",
+      "source_path": "00-system.architecture.json",
+      "summary": "Recorder app, backend services, RAG pipeline, and integrations"
+    },
+    {
+      "id": "app",
+      "type": "architecture",
+      "level": 1,
+      "title": "Recorder App",
+      "path": "10-app.architecture.html",
+      "source_path": "10-app.architecture.json",
+      "parent": "system",
+      "parent_node": "app",
+      "summary": "Mobile app internal architecture with recording, playback, and sync features"
+    },
+    {
+      "id": "backend",
+      "type": "architecture",
+      "level": 1,
+      "title": "Backend Services",
+      "path": "11-backend.architecture.html",
+      "source_path": "11-backend.architecture.json",
+      "parent": "system",
+      "parent_node": "backend",
+      "summary": "API gateway, processing services, and storage"
+    },
+    {
+      "id": "app-recording",
+      "type": "workflow",
+      "level": 2,
+      "title": "Recording Workflow",
+      "path": "20-app-recording.workflow.html",
+      "source_path": "20-app-recording.workflow.json",
+      "parent": "app",
+      "parent_node": "recording",
+      "tags": ["recording", "audio", "business"],
+      "summary": "From recording start to upload completion"
+    },
+    {
+      "id": "app-backend-upload",
+      "type": "sequence",
+      "level": 3,
+      "title": "Upload API Sequence",
+      "path": "30-upload.sequence.html",
+      "source_path": "30-upload.sequence.json",
+      "parent": "app-recording",
+      "parent_node": "upload",
+      "tags": ["api", "upload"],
+      "summary": "App to backend upload API call sequence"
+    }
+  ],
+  "levels": {
+    "L0": {
+      "name": "System",
+      "description": "Overall system boundaries and major components",
+      "preferred_types": ["architecture"]
+    },
+    "L1": {
+      "name": "Module",
+      "description": "Internal structure of major components",
+      "preferred_types": ["architecture"]
+    },
+    "L2": {
+      "name": "Business",
+      "description": "Business processes and state machines",
+      "preferred_types": ["workflow", "lifecycle"]
+    },
+    "L3": {
+      "name": "Interaction",
+      "description": "Cross-system API calls and message flows",
+      "preferred_types": ["sequence"]
+    },
+    "L4": {
+      "name": "API",
+      "description": "Specific endpoint call chains",
+      "preferred_types": ["sequence"]
+    },
+    "L5": {
+      "name": "Data",
+      "description": "Data lineage with code evidence",
+      "preferred_types": ["dataflow"]
+    }
+  },
+  "navigation": {
+    "show_siblings": true
+  }
+}
