@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "layout": {
+    "mode": "grid",
+    "cols": 3,
+    "gapX": 200,
+    "gapY": 160
+  },
+  "meta": {
+    "title": "Archify System Overview",
+    "subtitle": "JSON-IR Diagram Rendering Engine",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "atlas": {
+      "id": "archify-system",
+      "diagram_id": "system",
+      "level": 0
+    },
+    "views": [
+      {
+        "id": "core-flow",
+        "label": "核心渲染流程",
+        "focus": ["json-source", "renderers", "viewer", "html-output"],
+        "note": "从 JSON 源文件到可交互 HTML 的完整渲染路径"
+      },
+      {
+        "id": "tooling",
+        "label": "工具与分发",
+        "focus": ["cli", "schemas", "scripts", "archive"],
+        "note": "支持开发和分发的工具组件"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "json-source",
+      "type": "database",
+      "label": "JSON 源文件",
+      "sublabel": "Diagram JSON-IR",
+      "row": 0,
+      "col": 0
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "Archify CLI",
+      "sublabel": "bin/archify.mjs",
+      "row": 0,
+      "col": 1,
+      "drill": {
+        "href": "./10-cli.architecture.html",
+        "diagram_type": "architecture",
+        "label": "查看 CLI 内部结构"
+      }
+    },
+    {
+      "id": "html-output",
+      "type": "frontend",
+      "label": "HTML 输出",
+      "sublabel": "Standalone Artifacts",
+      "row": 0,
+      "col": 2
+    },
+    {
+      "id": "schemas",
+      "type": "security",
+      "label": "JSON Schema",
+      "sublabel": "Validation & Types",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "renderers",
+      "type": "backend",
+      "label": "渲染器集群",
+      "sublabel": "5 种图表类型",
+      "row": 1,
+      "col": 1,
+      "drill": {
+        "href": "./11-renderers.architecture.html",
+        "diagram_type": "architecture",
+        "label": "查看渲染器架构"
+      }
+    },
+    {
+      "id": "viewer",
+      "type": "frontend",
+      "label": "Viewer 模板",
+      "sublabel": "Interactive UI",
+      "row": 1,
+      "col": 2,
+      "drill": {
+        "href": "./12-viewer.architecture.html",
+        "diagram_type": "architecture",
+        "label": "查看 Viewer 模块"
+      }
+    },
+    {
+      "id": "scripts",
+      "type": "backend",
+      "label": "构建脚本",
+      "sublabel": "Build & Gallery",
+      "row": 2,
+      "col": 0
+    },
+    {
+      "id": "archive",
+      "type": "cloud",
+      "label": "archify.zip",
+      "sublabel": "Portable Skill",
+      "row": 2,
+      "col": 1
+    },
+    {
+      "id": "docs",
+      "type": "external",
+      "label": "GitHub Pages",
+      "sublabel": "Documentation Site",
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "connections": [
+    {
+      "from": "json-source",
+      "to": "cli",
+      "label": "输入"
+    },
+    {
+      "from": "cli",
+      "to": "renderers",
+      "label": "调用",
+      "labelDy": 24
+    },
+    {
+      "from": "renderers",
+      "to": "html-output",
+      "label": "生成",
+      "labelDy": -24
+    },
+    {
+      "from": "schemas",
+      "to": "cli",
+      "label": "验证",
+      "variant": "security",
+      "labelDy": -24
+    },
+    {
+      "from": "viewer",
+      "to": "renderers",
+      "label": "模板",
+      "labelDy": 24
+    },
+    {
+      "from": "scripts",
+      "to": "archive",
+      "label": "打包"
+    },
+    {
+      "from": "archive",
+      "to": "docs",
+      "label": "发布"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "核心能力",
+      "items": [
+        "5 种图表类型：架构、工作流、时序、数据流、生命周期",
+        "零依赖便携式 JSON 到 HTML 渲染",
+        "交互式 Viewer 支持缩放、聚焦、路径追踪"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "质量保证",
+      "items": [
+        "严格的 JSON Schema 验证",
+        "1394 个自动化测试用例",
+        "可重现的 Golden 渲染测试"
+      ]
+    }
+  ]
+}
