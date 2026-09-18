@@ -110,6 +110,58 @@
           }
         }
       }
+    },
+    "drill": {
+      "type": "object",
+      "description": "Drill-down navigation to a child diagram within an atlas",
+      "additionalProperties": false,
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path to the child diagram HTML"
+        },
+        "diagram_type": {
+          "enum": ["architecture", "workflow", "sequence", "dataflow", "lifecycle"],
+          "description": "Expected type of the target diagram"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 48,
+          "description": "Navigation label shown in Viewer"
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "description": "Cross-diagram navigation links",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "kind"],
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/id",
+            "description": "Target node or diagram ID"
+          },
+          "kind": {
+            "enum": ["drill-down", "drill-up", "sibling", "reference"],
+            "description": "Type of navigation relationship"
+          },
+          "href": {
+            "type": "string",
+            "description": "Relative path to target diagram"
+          },
+          "diagram_type": {
+            "enum": ["architecture", "workflow", "sequence", "dataflow", "lifecycle"]
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 48
+          }
+        }
+      }
     }
   }
 }

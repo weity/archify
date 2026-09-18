@@ -54,6 +54,29 @@
         "views": {
           "$ref": "common.schema.json#/$defs/guidedViews"
         },
+        "atlas": {
+          "type": "object",
+          "description": "Atlas membership metadata for drill navigation",
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/id" },
+            "diagram_id": { "$ref": "common.schema.json#/$defs/id" },
+            "parent": { "type": "string" },
+            "parent_node": { "$ref": "common.schema.json#/$defs/id" },
+            "level": { "type": "integer", "minimum": 0, "maximum": 9 },
+            "breadcrumb": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["label", "href"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "href": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
         "legend": {
           "type": "object",
           "additionalProperties": false,
@@ -117,7 +140,9 @@
           },
           "brand": {
             "$ref": "common.schema.json#/$defs/brandMark"
-          }
+          },
+          "drill": { "$ref": "common.schema.json#/$defs/drill" },
+          "links": { "$ref": "common.schema.json#/$defs/links" }
         }
       }
     },
